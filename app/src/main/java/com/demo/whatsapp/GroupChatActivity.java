@@ -1,12 +1,7 @@
 package com.demo.whatsapp;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -14,6 +9,9 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -53,13 +51,10 @@ public class GroupChatActivity extends AppCompatActivity {
 
         getUserInfo();
 
-        sendMessageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveMessageInfoToDatabase();
+        sendMessageButton.setOnClickListener(view -> {
+            saveMessageInfoToDatabase();
 
-                userMessageInput.setText("");
-            }
+            userMessageInput.setText("");
         });
     }
 

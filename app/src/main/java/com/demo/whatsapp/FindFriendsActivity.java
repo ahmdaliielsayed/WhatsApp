@@ -65,14 +65,11 @@ public class FindFriendsActivity extends AppCompatActivity {
                         .placeholder(R.drawable.person_photo)
                         .into(holder.profileImage);
 
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String visitUserID = getRef(position).getKey();
-                        Intent profileIntent = new Intent(FindFriendsActivity.this, ProfileActivity.class);
-                        profileIntent.putExtra("visit_user_id", visitUserID);
-                        startActivity(profileIntent);
-                    }
+                holder.itemView.setOnClickListener(view -> {
+                    String visitUserID = getRef(position).getKey();
+                    Intent profileIntent = new Intent(FindFriendsActivity.this, ProfileActivity.class);
+                    profileIntent.putExtra("visit_user_id", visitUserID);
+                    startActivity(profileIntent);
                 });
             }
 

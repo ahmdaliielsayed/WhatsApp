@@ -1,24 +1,20 @@
 package com.demo.whatsapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -59,12 +55,17 @@ public class RegisterActivity extends AppCompatActivity {
 
             firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
+                    String deviceToken = FirebaseInstanceId.getInstance().getToken();
                     String currentUserID = firebaseAuth.getCurrentUser().getUid();
                     databaseReference.child("Users").child(currentUserID).setValue("");
 
-                    Toast.makeText(RegisterActivity.this, "Account Created Successfully!", Toast.LENGTH_SHORT).show();
-                    progressDialog.dismiss();
-                    sendUserToMainActivity();
+                    databaseReference.child("Users").child(currentUserID).child("device_token").setValue(deviceToken).addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            Toast.makeText(RegisterActivity.this, "Account Created Successfully!", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                            sendUserToMainActivity();
+                        }
+                    });
                 } else {
                     Toast.makeText(RegisterActivity.this, "Error: " + task.getException().toString(), Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();

@@ -1,7 +1,5 @@
 package com.demo.whatsapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +9,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -20,6 +23,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextView forgetPasswordLink, needNewAccountLink;
 
     private FirebaseAuth firebaseAuth;
+    private DatabaseReference databaseReference;
 
     private ProgressDialog progressDialog;
 
@@ -53,9 +57,16 @@ public class LoginActivity extends AppCompatActivity {
 
             firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    Toast.makeText(this, "Logged in successfully!", Toast.LENGTH_SHORT).show();
-                    progressDialog.dismiss();
-                    sendUserToMainActivity();
+                    String currentUserID = firebaseAuth.getCurrentUser().getUid();
+                    String deviceToken = FirebaseInstanceId.getInstance().getToken();
+
+                    databaseReference.child(currentUserID).child("device_token").setValue(deviceToken).addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            Toast.makeText(LoginActivity.this, "Logged in successfully!", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                            sendUserToMainActivity();
+                        }
+                    });
                 } else {
                     Toast.makeText(LoginActivity.this, "Error: " + task.getException().toString(), Toast.LENGTH_SHORT).show();
                     progressDialog.dismiss();
@@ -73,6 +84,7 @@ public class LoginActivity extends AppCompatActivity {
         forgetPasswordLink = findViewById(R.id.forget_password_link);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("Users");
 
         progressDialog = new ProgressDialog(this);
     }

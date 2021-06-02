@@ -45,7 +45,7 @@
 
         <EditText
             android:id="@+id/input_group_message"
-            android:layout_width="320dp"
+            android:layout_width="340dp"
             android:layout_height="wrap_content"
             android:hint="write your message here..."
             android:padding="17dp"/>

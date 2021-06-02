@@ -1,24 +1,21 @@
 package com.demo.whatsapp;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -28,7 +25,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -53,14 +49,14 @@ public class SettingsActivity extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
 
+    private Toolbar settingsToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
         initializeComponents();
-
-//        userName.setVisibility(View.GONE);
 
         updateSettingsButton.setOnClickListener(view -> updateSettings());
 
@@ -128,6 +124,12 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void initializeComponents() {
+        settingsToolbar = findViewById(R.id.settings_toolbar);
+        setSupportActionBar(settingsToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setTitle("Account Settings");
+
         profileImage = findViewById(R.id.profile_image);
         userName = findViewById(R.id.set_user_name);
         userStatus = findViewById(R.id.set_profile_status);
@@ -151,21 +153,17 @@ public class SettingsActivity extends AppCompatActivity {
         } else if (TextUtils.isEmpty(setUserStatus)) {
             Toast.makeText(this, "Please, write your status...", Toast.LENGTH_SHORT).show();
         } else {
-            HashMap<String, String> profileMap = new HashMap<>();
+            HashMap<String, Object> profileMap = new HashMap<>();
                 profileMap.put("uid", currentUserID);
                 profileMap.put("name", setUserName);
                 profileMap.put("status", setUserStatus);
-            databaseReference.child("Users").child(currentUserID).setValue(profileMap)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(SettingsActivity.this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
-                                sendUserToMainActivity();
-                            } else {
-//                                userName.setVisibility(View.VISIBLE);
-                                Toast.makeText(SettingsActivity.this, "Error: " + task.getException(), Toast.LENGTH_SHORT).show();
-                            }
+            databaseReference.child("Users").child(currentUserID).updateChildren(profileMap)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(SettingsActivity.this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+                            sendUserToMainActivity();
+                        } else {
+                            Toast.makeText(SettingsActivity.this, "Error: " + task.getException(), Toast.LENGTH_SHORT).show();
                         }
                     });
         }
@@ -182,9 +180,14 @@ public class SettingsActivity extends AppCompatActivity {
 
                     userName.setText(retrieveUserName);
                     userStatus.setText(retrieveUserStatus);
-                    Glide.with(SettingsActivity.this)
-                            .load(retrieveProfileImage)
-                            .into(profileImage);
+                    try {
+                        Glide.with(SettingsActivity.this)
+                                .load(retrieveProfileImage)
+                                .placeholder(R.drawable.person_photo)
+                                .into(profileImage);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 } else if ((snapshot.exists()) && (snapshot.hasChild("name"))) {
                     String retrieveUserName = Objects.requireNonNull(snapshot.child("name").getValue()).toString();
                     String retrieveUserStatus = Objects.requireNonNull(snapshot.child("status").getValue()).toString();

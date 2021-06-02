@@ -1,9 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/profile_activity"
     tools:context=".ProfileActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/visit_profile_image"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="110dp"
+        android:src="@drawable/person_photo"
+        app:civ_border_width="2dp"
+        app:civ_border_color="@color/purple_500"/>
+
+    <TextView
+        android:id="@+id/visit_user_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="username"
+        android:layout_below="@id/visit_profile_image"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/visit_user_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hi there, I hope to finish this app!"
+        android:layout_below="@id/visit_user_name"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="italic" />
+
+    <Button
+        android:id="@+id/send_message_request_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/visit_user_status"
+        android:layout_centerHorizontal="true"
+        android:paddingStart="40dp"
+        android:paddingEnd="40dp"
+        android:layout_marginTop="16dp"
+        android:textColor="@android:color/background_light"
+        android:textStyle="bold"
+        android:background="@drawable/buttons"
+        android:textSize="20sp"
+        android:text="Send Message"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/decline_message_request_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/send_message_request_button"
+        android:layout_centerHorizontal="true"
+        android:paddingStart="40dp"
+        android:paddingEnd="40dp"
+        android:layout_marginTop="16dp"
+        android:textColor="@android:color/background_light"
+        android:textStyle="bold"
+        android:background="@drawable/buttons"
+        android:textSize="20sp"
+        android:text="Cancel Chat Request"
+        android:textAllCaps="false"
+        android:visibility="gone"/>
+</RelativeLayout>

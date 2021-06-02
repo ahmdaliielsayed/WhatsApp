@@ -1,8 +1,5 @@
 package com.demo.whatsapp;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,10 +9,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.FirebaseException;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -67,23 +64,20 @@ public class LoginPhoneActivity extends AppCompatActivity {
             }
         });
 
-        btnVerify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String verificationCode = inputVerificationCode.getText().toString();
+        btnVerify.setOnClickListener(view -> {
+            String verificationCode = inputVerificationCode.getText().toString();
 
-                if (TextUtils.isEmpty(verificationCode)) {
-                    Toast.makeText(LoginPhoneActivity.this, "please, write verification code first!", Toast.LENGTH_SHORT).show();
-                } else {
-                    progressDialog.setTitle("Verification Code");
-                    progressDialog.setMessage("please wait, while we are verifying verification code...");
-                    progressDialog.setCanceledOnTouchOutside(false);
-                    progressDialog.show();
+            if (TextUtils.isEmpty(verificationCode)) {
+                Toast.makeText(LoginPhoneActivity.this, "please, write verification code first!", Toast.LENGTH_SHORT).show();
+            } else {
+                progressDialog.setTitle("Verification Code");
+                progressDialog.setMessage("please wait, while we are verifying verification code...");
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.show();
 
-                    PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, verificationCode);
+                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, verificationCode);
 
-                    signInWithPhoneAuthCredential(credential);
-                }
+                signInWithPhoneAuthCredential(credential);
             }
         });
 
@@ -143,27 +137,24 @@ public class LoginPhoneActivity extends AppCompatActivity {
 
     private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            progressDialog.dismiss();
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Sign in success, update UI with the signed-in user's information
+                        progressDialog.dismiss();
 
-                            Toast.makeText(LoginPhoneActivity.this, "logged in successfully!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginPhoneActivity.this, "logged in successfully!", Toast.LENGTH_SHORT).show();
 
 //                            FirebaseUser user = task.getResult().getUser();
-                            // Update UI
-                            sendUserToMainActivity();
-                        } else {
-                            progressDialog.dismiss();
-                            // Sign in failed, display a message and update the UI
+                        // Update UI
+                        sendUserToMainActivity();
+                    } else {
+                        progressDialog.dismiss();
+                        // Sign in failed, display a message and update the UI
 //                            Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Toast.makeText(LoginPhoneActivity.this, "Error: " + Objects.requireNonNull(task.getException()).toString(), Toast.LENGTH_SHORT).show();
-                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                // The verification code entered was invalid
-                                // try to send it again!
-                            }
+                        Toast.makeText(LoginPhoneActivity.this, "Error: " + Objects.requireNonNull(task.getException()).toString(), Toast.LENGTH_SHORT).show();
+                        if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                            // The verification code entered was invalid
+                            // try to send it again!
                         }
                     }
                 });
