@@ -93,10 +93,14 @@ public class ContactsFragment extends Fragment {
                             if (snapshot.hasChild("image")) {
                                 String profileImage = Objects.requireNonNull(snapshot.child("image").getValue()).toString();
 
-                                Glide.with(Objects.requireNonNull(getContext()))
-                                        .load(profileImage)
-                                        .placeholder(R.drawable.person_photo)
-                                        .into(holder.getUserImage());
+                                try {
+                                    Glide.with(Objects.requireNonNull(getContext()))
+                                            .load(profileImage)
+                                            .placeholder(R.drawable.person_photo)
+                                            .into(holder.getUserImage());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
                             String profileName = Objects.requireNonNull(snapshot.child("name").getValue()).toString();
                             String profileStatus = Objects.requireNonNull(snapshot.child("status").getValue()).toString();

@@ -180,14 +180,10 @@ public class SettingsActivity extends AppCompatActivity {
 
                     userName.setText(retrieveUserName);
                     userStatus.setText(retrieveUserStatus);
-                    try {
-                        Glide.with(SettingsActivity.this)
-                                .load(retrieveProfileImage)
-                                .placeholder(R.drawable.person_photo)
-                                .into(profileImage);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    Glide.with(getApplicationContext())
+                            .load(retrieveProfileImage)
+                            .placeholder(R.drawable.person_photo)
+                            .into(profileImage);
                 } else if ((snapshot.exists()) && (snapshot.hasChild("name"))) {
                     String retrieveUserName = Objects.requireNonNull(snapshot.child("name").getValue()).toString();
                     String retrieveUserStatus = Objects.requireNonNull(snapshot.child("status").getValue()).toString();
