@@ -52,6 +52,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging'
     // FirebaseUI for Firebase Realtime Database
     implementation 'com.firebaseui:firebase-ui-database:7.1.1'
+    implementation 'com.google.android.gms:play-services-ads:19.1.0'
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
